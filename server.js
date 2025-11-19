@@ -7,16 +7,21 @@ dotenv.config();
 
 const app = express();
 
-// CORS fix for Netlify + preflight
-app.use(cors({
-  origin: "https://teal-klepon-9a05ff.netlify.app",
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
-app.options("*", cors()); // preflight request handle
-
+// Basic JSON parsing
 app.use(express.json());
+
+// CORS configuration
+const allowedOrigin = "https://teal-klepon-9a05ff.netlify.app";
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", allowedOrigin);
+  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200); // preflight OK
+  }
+  next();
+});
 
 app.post("/submit", async (req, res) => {
   try {
