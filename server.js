@@ -6,10 +6,10 @@ dotenv.config();
 
 const app = express();
 
-// JSON parsing
+// 1️⃣ JSON parsing
 app.use(express.json());
 
-// ✅ यहाँ add करो: OPTIONS preflight handler
+// 2️⃣ ✅ OPTIONS preflight handle (CORS)
 app.options("*", (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "https://teal-klepon-9a05ff.netlify.app");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -17,7 +17,7 @@ app.options("*", (req, res) => {
   res.sendStatus(200);
 });
 
-// CORS headers for all other requests
+// 3️⃣ CORS headers for all other requests
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "https://teal-klepon-9a05ff.netlify.app");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// POST route
+// 4️⃣ POST route
 app.post("/submit", async (req, res) => {
   try {
     const { first_name, last_name, email, phone, student_id, description } = req.body;
@@ -43,5 +43,6 @@ app.post("/submit", async (req, res) => {
   }
 });
 
+// 5️⃣ Server listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
