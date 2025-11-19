@@ -1,5 +1,4 @@
 import express from "express";
-import cors from "cors";
 import sql from "./db.js";
 import dotenv from "dotenv";
 
@@ -7,22 +6,21 @@ dotenv.config();
 
 const app = express();
 
-// Basic JSON parsing
+// JSON parsing
 app.use(express.json());
 
-// CORS configuration
-const allowedOrigin = "https://teal-klepon-9a05ff.netlify.app";
-
+// ✅ यहाँ add करो: CORS headers
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", allowedOrigin);
-  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Origin", "https://teal-klepon-9a05ff.netlify.app");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200); // preflight OK
+    return res.sendStatus(200); // Preflight OK
   }
   next();
 });
 
+// POST route
 app.post("/submit", async (req, res) => {
   try {
     const { first_name, last_name, email, phone, student_id, description } = req.body;
