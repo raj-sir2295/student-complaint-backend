@@ -1,23 +1,30 @@
-const express = require("express");
-const cors = require("cors");
-const db = require("./db");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import sql from "./db.js";   // Neon DB connected
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/submit", (req, res) => {
-  const { first_name, last_name, email, phone, student_id, description } = req.body;
+app.post("/submit", async (req, res) => {
+  try {
+    const { first_name, last_name, email, phone, student_id, description } = req.body;
 
-  const sql = "INSERT INTO complaints (first_name, last_name, email, phone, student_id, description) VALUES (?, ?, ?, ?, ?, ?)";
-  db.query(sql, [first_name, last_name, email, phone, student_id, description], (err, result) => {
-    if (err) {
-      res.send({ status: "error", error: err });
-    } else {
-      res.send({ status: "success", message: "Complaint Submitted" });
-    }
-  });
+    await sql`
+      INSERT INTO complaints (first_name, last_name, email, phone, student_id, description)
+      VALUES (${first_name}, ${last_name}, ${email}, ${phone}, ${student_id}, ${description})
+    `;
+
+    res.send({ status: "success", message: "Complaint Submitted" });
+
+  } catch (err) {
+    console.error("DB ERROR:", err);
+    res.send({ status: "error", error: err });
+  }
 });
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
