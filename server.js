@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
+
+// 1️⃣ JSON parsing
 app.use(express.json());
 
 // CORS headers
